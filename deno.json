@@ -1,0 +1,12 @@
+{
+  "name": "@tentacle/nats-schema",
+  "version": "1.0.0",
+  "description": "Shared NATS topic and message schemas for Tentacle platform",
+  "exports": {
+    ".": "./src/mod.ts",
+    "./topics": "./src/topics.ts",
+    "./types": "./src/types.ts",
+    "./kv": "./src/kv-buckets.ts",
+    "./validate": "./src/validate.ts"
+  }
+}
