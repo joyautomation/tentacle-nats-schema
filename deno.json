@@ -1,6 +1,6 @@
 {
-  "name": "@tentacle/nats-schema",
-  "version": "1.0.0",
+  "name": "@joyautomation/nats-schema",
+  "version": "0.0.1",
   "description": "Shared NATS topic and message schemas for Tentacle platform",
   "exports": {
     ".": "./src/mod.ts",
