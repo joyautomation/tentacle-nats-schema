@@ -99,29 +99,29 @@ export function validateSubstitution(topic: string): boolean {
  */
 export const NATS_SUBSCRIPTIONS = {
   // Subscribe to all PLC variable updates from a project
-  allProjectVariables: (projectId: string) =>
+  allProjectVariables: (projectId: string): string =>
     substituteTopic(NATS_TOPICS.plc.dataAll, { projectId }),
 
   // Subscribe to all field sensor readings
-  allFieldSensors: () => "field.sensor.>",
+  allFieldSensors: (): string => "field.sensor.>",
 
   // Subscribe to all events from a project
-  allProjectEvents: (projectId: string) =>
+  allProjectEvents: (projectId: string): string =>
     substituteTopic(NATS_TOPICS.comm.event, { projectId }),
 
   // Subscribe to all critical alerts
-  allAlerts: (projectId: string) =>
+  allAlerts: (projectId: string): string =>
     substituteTopic(NATS_TOPICS.comm.alert, { projectId }),
 
   // Subscribe to all GraphQL updates
-  allGraphQLUpdates: () => "graphql.update.>",
+  allGraphQLUpdates: (): string => "graphql.update.>",
 
   // Subscribe to all MQTT traffic
-  allMqttInbound: () => "mqtt.inbound.>",
-  allMqttOutbound: () => "mqtt.outbound.>",
+  allMqttInbound: (): string => "mqtt.inbound.>",
+  allMqttOutbound: (): string => "mqtt.outbound.>",
 
   // Subscribe to all system events
-  allSystemEvents: () => "system.>",
+  allSystemEvents: (): string => "system.>",
 } as const;
 
 /**
