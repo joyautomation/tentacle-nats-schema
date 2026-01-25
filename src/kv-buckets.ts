@@ -81,6 +81,20 @@ export const DeviceHealthBucket = {
 } as const;
 
 /**
+ * KV bucket for service heartbeats
+ * Keys: {serviceType}.{instanceId}.{projectId}
+ * Value: ServiceHeartbeat JSON
+ * Services publish periodically to indicate they are alive
+ */
+export const ServiceHeartbeatBucket = {
+  name: "service_heartbeats",
+  description: "Service heartbeat entries for health monitoring",
+  keyPattern: "{serviceType}.{instanceId}.{projectId}",
+  ttl: 60, // 1 minute - services must publish at least every 30s
+  maxBytes: -1,
+} as const;
+
+/**
  * KV bucket for caching GraphQL results
  * Keys: {resource}:{resourceId}
  * Value: Cached GraphQL object JSON
@@ -114,6 +128,7 @@ export const ALL_KV_BUCKETS = [
   FieldMeasurementsBucket,
   ProjectSettingsBucket,
   DeviceHealthBucket,
+  ServiceHeartbeatBucket,
   GraphQLCacheBucket,
 ] as const;
 
@@ -127,5 +142,6 @@ export const KV_BUCKET_MAP = {
   [FieldMeasurementsBucket.name]: FieldMeasurementsBucket,
   [ProjectSettingsBucket.name]: ProjectSettingsBucket,
   [DeviceHealthBucket.name]: DeviceHealthBucket,
+  [ServiceHeartbeatBucket.name]: ServiceHeartbeatBucket,
   [GraphQLCacheBucket.name]: GraphQLCacheBucket,
 } as const;

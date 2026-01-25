@@ -133,6 +133,33 @@ export type HealthCheckMessage = {
   checks?: Record<string, boolean>;
 };
 
+/** Service types in the Tentacle ecosystem */
+export type TentacleServiceType =
+  | "ethernetip"
+  | "plc"
+  | "mqtt"
+  | "graphql"
+  | "modbus"
+  | "opcua";
+
+/** Service heartbeat entry in KV - published by each tentacle service */
+export type ServiceHeartbeat = {
+  /** Type of service (e.g., "ethernetip", "plc", "mqtt") */
+  serviceType: TentacleServiceType;
+  /** Unique instance identifier (hostname or UUID) */
+  instanceId: string;
+  /** Project this service is running for */
+  projectId: string;
+  /** Timestamp of last heartbeat update */
+  lastSeen: number;
+  /** Service start time */
+  startedAt: number;
+  /** Service version */
+  version?: string;
+  /** Optional metadata (e.g., PLC connection status, tag count) */
+  metadata?: Record<string, unknown>;
+};
+
 /**
  * Type guard creators for runtime validation
  */

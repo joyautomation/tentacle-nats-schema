@@ -56,6 +56,8 @@ export type {
   ConfigKV,
   HealthCheckMessage,
   DeadBandConfig,
+  TentacleServiceType,
+  ServiceHeartbeat,
 } from "./types.ts";
 
 export {
@@ -76,6 +78,7 @@ export {
   FieldMeasurementsBucket,
   ProjectSettingsBucket,
   DeviceHealthBucket,
+  ServiceHeartbeatBucket,
   GraphQLCacheBucket,
   ALL_KV_BUCKETS,
   KV_BUCKET_MAP,
