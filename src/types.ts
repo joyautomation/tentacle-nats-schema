@@ -13,6 +13,8 @@ export type DeadBandConfig = {
 /** PLC variable data message published when a variable changes */
 export type PlcDataMessage = {
   projectId: string;
+  /** Device/PLC this variable belongs to */
+  deviceId: string;
   variableId: string;
   value: number | boolean | string | Record<string, unknown>;
   timestamp: number;
@@ -103,6 +105,8 @@ export type DeviceRegistryKV = {
 /** PLC variable state in KV */
 export type PlcVariableKV = {
   projectId: string;
+  /** Device/PLC this variable belongs to */
+  deviceId?: string;
   variableId: string;
   value: number | boolean | string | Record<string, unknown>;
   datatype: "number" | "boolean" | "string" | "udt";
