@@ -1,6 +1,6 @@
 {
   "name": "@joyautomation/tentacle-nats-schema",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "Shared NATS topic and message schemas for Tentacle platform",
   "license": "MIT",
   "exports": {
