@@ -13,6 +13,7 @@ import type {
   GraphQLUpdate,
   MqttBridgeMessage,
   HealthCheckMessage,
+  BrowseProgressMessage,
 } from "./types.ts";
 
 /**
@@ -181,6 +182,29 @@ export function isHealthCheckMessage(data: unknown): data is HealthCheckMessage 
 }
 
 /**
+ * Validates a BrowseProgressMessage
+ */
+export function isBrowseProgressMessage(data: unknown): data is BrowseProgressMessage {
+  if (typeof data !== "object" || data === null) return false;
+  const msg = data as Record<string, unknown>;
+
+  const validPhases = ["discovering", "expanding", "reading", "caching", "completed", "failed"];
+
+  return (
+    typeof msg.browseId === "string" &&
+    typeof msg.projectId === "string" &&
+    typeof msg.deviceId === "string" &&
+    typeof msg.phase === "string" &&
+    validPhases.includes(msg.phase as string) &&
+    typeof msg.totalTags === "number" &&
+    typeof msg.completedTags === "number" &&
+    typeof msg.errorCount === "number" &&
+    typeof msg.timestamp === "number" &&
+    (msg.message === undefined || typeof msg.message === "string")
+  );
+}
+
+/**
  * Combined validator for common message types
  * Returns the validated message type, or null if validation fails
  */
@@ -195,7 +219,8 @@ export function validateMessage(
     | "event"
     | "graphql"
     | "mqtt"
-    | "health",
+    | "health"
+    | "browseProgress",
 ): unknown | null {
   switch (expectedType) {
     case "plcData":
@@ -216,6 +241,8 @@ export function validateMessage(
       return isMqttBridgeMessage(data) ? data : null;
     case "health":
       return isHealthCheckMessage(data) ? data : null;
+    case "browseProgress":
+      return isBrowseProgressMessage(data) ? data : null;
     default:
       // Try to detect type automatically
       if (isPlcDataMessage(data)) return data;
@@ -227,6 +254,7 @@ export function validateMessage(
       if (isGraphQLUpdate(data)) return data;
       if (isMqttBridgeMessage(data)) return data;
       if (isHealthCheckMessage(data)) return data;
+      if (isBrowseProgressMessage(data)) return data;
       return null;
   }
 }

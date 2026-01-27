@@ -164,6 +164,37 @@ export type ServiceHeartbeat = {
   metadata?: Record<string, unknown>;
 };
 
+/** Browse operation phases */
+export type BrowsePhase =
+  | "discovering"
+  | "expanding"
+  | "reading"
+  | "caching"
+  | "completed"
+  | "failed";
+
+/** Browse progress message - published during tag browse operations */
+export type BrowseProgressMessage = {
+  /** Unique identifier for this browse operation */
+  browseId: string;
+  /** Project being browsed */
+  projectId: string;
+  /** Device/PLC being browsed */
+  deviceId: string;
+  /** Current phase of the browse operation */
+  phase: BrowsePhase;
+  /** Total number of tags to process (0 if not yet known) */
+  totalTags: number;
+  /** Number of tags processed so far */
+  completedTags: number;
+  /** Number of errors encountered */
+  errorCount: number;
+  /** Human-readable status message */
+  message?: string;
+  /** Timestamp of this progress update */
+  timestamp: number;
+};
+
 /**
  * Type guard creators for runtime validation
  */

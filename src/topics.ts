@@ -22,6 +22,9 @@ export const NATS_TOPICS = {
 
     /** Request all variables from a PLC: plc.variables.request.{projectId} */
     variablesRequest: "plc.variables.request.{projectId}",
+
+    /** Browse progress updates: plc.browse.progress.{browseId} */
+    browseProgress: "plc.browse.progress.{browseId}",
   },
 
   /** Field device topics */

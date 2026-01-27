@@ -58,6 +58,8 @@ export type {
   DeadBandConfig,
   TentacleServiceType,
   ServiceHeartbeat,
+  BrowsePhase,
+  BrowseProgressMessage,
 } from "./types.ts";
 
 export {
@@ -96,6 +98,7 @@ export {
   isGraphQLUpdate,
   isMqttBridgeMessage,
   isHealthCheckMessage,
+  isBrowseProgressMessage,
   validateMessage,
   parseAndValidate,
 } from "./validate.ts";
