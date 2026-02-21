@@ -14,14 +14,15 @@
  *   isPlcDataMessage,
  * } from "@tentacle/nats-schema";
  *
- * // Publish a PLC data message
- * const subject = substituteTopic(NATS_TOPICS.plc.data, {
- *   projectId: "proj1",
+ * // Publish a variable data message
+ * const subject = substituteTopic(NATS_TOPICS.module.data, {
+ *   moduleId: "ethernetip",
  *   variableId: "temp",
  * });
  *
  * const message: PlcDataMessage = {
- *   projectId: "proj1",
+ *   moduleId: "ethernetip",
+ *   deviceId: "plc1",
  *   variableId: "temp",
  *   value: 25.5,
  *   timestamp: Date.now(),
@@ -29,15 +30,6 @@
  * };
  *
  * await nc.publish(subject, JSON.stringify(message));
- *
- * // Subscribe and validate messages
- * const sub = nc.subscribe(subject);
- * for await (const msg of sub) {
- *   const data = JSON.parse(msg.string());
- *   if (isPlcDataMessage(data)) {
- *     console.log(`Variable ${data.variableId} = ${data.value}`);
- *   }
- * }
  * ```
  */
 
@@ -58,8 +50,21 @@ export type {
   DeadBandConfig,
   TentacleServiceType,
   ServiceHeartbeat,
+  ServiceLogEntry,
   BrowsePhase,
   BrowseProgressMessage,
+  NetworkInterfaceStats,
+  NetworkAddress,
+  NetworkInterface,
+  NetworkStateMessage,
+  NetworkInterfaceConfig,
+  NetworkCommandRequest,
+  NetworkCommandResponse,
+  NatRule,
+  NftablesConfig,
+  NftablesStateMessage,
+  NftablesCommandRequest,
+  NftablesCommandResponse,
 } from "./types.ts";
 
 export {
@@ -78,7 +83,7 @@ export {
   DeviceRegistryBucket,
   ConfigBucket,
   FieldMeasurementsBucket,
-  ProjectSettingsBucket,
+  SystemSettingsBucket,
   DeviceHealthBucket,
   ServiceHeartbeatBucket,
   GraphQLCacheBucket,
@@ -99,6 +104,8 @@ export {
   isMqttBridgeMessage,
   isHealthCheckMessage,
   isBrowseProgressMessage,
+  isNetworkCommandRequest,
+  isNftablesCommandRequest,
   validateMessage,
   parseAndValidate,
 } from "./validate.ts";

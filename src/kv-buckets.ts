@@ -4,26 +4,26 @@
 
 /**
  * KV bucket for storing current state of PLC variables
- * Keys: {projectId}:{variableId}
+ * Keys: {variableId}
  * Value: PlcVariableKV JSON
  */
 export const PLCVariablesBucket = {
   name: "plc_variables",
   description: "Current state of all PLC variables",
-  keyPattern: "{projectId}:{variableId}",
+  keyPattern: "{variableId}",
   ttl: 0, // No expiration
   maxBytes: -1, // Unlimited
 } as const;
 
 /**
  * KV bucket for device registry
- * Keys: {projectId}:{deviceId}
+ * Keys: {deviceId}
  * Value: DeviceRegistryKV JSON
  */
 export const DeviceRegistryBucket = {
   name: "device_registry",
   description: "Device registry and metadata",
-  keyPattern: "{projectId}:{deviceId}",
+  keyPattern: "{deviceId}",
   ttl: 0, // No expiration
   maxBytes: -1,
 } as const;
@@ -55,14 +55,14 @@ export const FieldMeasurementsBucket = {
 } as const;
 
 /**
- * KV bucket for project metadata and settings
- * Keys: {projectId}:{setting}
+ * KV bucket for system settings
+ * Keys: {setting}
  * Value: JSON configuration
  */
-export const ProjectSettingsBucket = {
-  name: "project_settings",
-  description: "Project-specific settings and metadata",
-  keyPattern: "{projectId}:{setting}",
+export const SystemSettingsBucket = {
+  name: "system_settings",
+  description: "System-wide settings and metadata",
+  keyPattern: "{setting}",
   ttl: 0,
   maxBytes: -1,
 } as const;
@@ -82,14 +82,14 @@ export const DeviceHealthBucket = {
 
 /**
  * KV bucket for service heartbeats
- * Keys: {serviceType}.{instanceId}.{projectId}
+ * Keys: {moduleId}
  * Value: ServiceHeartbeat JSON
  * Services publish periodically to indicate they are alive
  */
 export const ServiceHeartbeatBucket = {
   name: "service_heartbeats",
   description: "Service heartbeat entries for health monitoring",
-  keyPattern: "{serviceType}.{instanceId}.{projectId}",
+  keyPattern: "{moduleId}",
   ttl: 60, // 1 minute - services must publish at least every 30s
   maxBytes: -1,
 } as const;
@@ -126,7 +126,7 @@ export const ALL_KV_BUCKETS = [
   DeviceRegistryBucket,
   ConfigBucket,
   FieldMeasurementsBucket,
-  ProjectSettingsBucket,
+  SystemSettingsBucket,
   DeviceHealthBucket,
   ServiceHeartbeatBucket,
   GraphQLCacheBucket,
@@ -140,7 +140,7 @@ export const KV_BUCKET_MAP = {
   [DeviceRegistryBucket.name]: DeviceRegistryBucket,
   [ConfigBucket.name]: ConfigBucket,
   [FieldMeasurementsBucket.name]: FieldMeasurementsBucket,
-  [ProjectSettingsBucket.name]: ProjectSettingsBucket,
+  [SystemSettingsBucket.name]: SystemSettingsBucket,
   [DeviceHealthBucket.name]: DeviceHealthBucket,
   [ServiceHeartbeatBucket.name]: ServiceHeartbeatBucket,
   [GraphQLCacheBucket.name]: GraphQLCacheBucket,

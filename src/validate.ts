@@ -14,6 +14,8 @@ import type {
   MqttBridgeMessage,
   HealthCheckMessage,
   BrowseProgressMessage,
+  NetworkCommandRequest,
+  NftablesCommandRequest,
 } from "./types.ts";
 
 /**
@@ -24,7 +26,7 @@ export function isPlcDataMessage(data: unknown): data is PlcDataMessage {
   const msg = data as Record<string, unknown>;
 
   return (
-    typeof msg.projectId === "string" &&
+    typeof msg.moduleId === "string" &&
     typeof msg.variableId === "string" &&
     (typeof msg.value === "number" ||
       typeof msg.value === "boolean" ||
@@ -44,7 +46,7 @@ export function isPlcStatusMessage(data: unknown): data is PlcStatusMessage {
   const msg = data as Record<string, unknown>;
 
   return (
-    typeof msg.projectId === "string" &&
+    typeof msg.moduleId === "string" &&
     typeof msg.status === "string" &&
     ["running", "stopped", "error", "paused"].includes(msg.status as string) &&
     typeof msg.timestamp === "number" &&
@@ -113,7 +115,7 @@ export function isCommunicationEvent(data: unknown): data is CommunicationEvent 
   const msg = data as Record<string, unknown>;
 
   return (
-    typeof msg.projectId === "string" &&
+    typeof msg.moduleId === "string" &&
     typeof msg.type === "string" &&
     ["error", "warning", "info", "debug"].includes(msg.type as string) &&
     typeof msg.message === "string" &&
@@ -192,7 +194,7 @@ export function isBrowseProgressMessage(data: unknown): data is BrowseProgressMe
 
   return (
     typeof msg.browseId === "string" &&
-    typeof msg.projectId === "string" &&
+    typeof msg.moduleId === "string" &&
     typeof msg.deviceId === "string" &&
     typeof msg.phase === "string" &&
     validPhases.includes(msg.phase as string) &&
@@ -201,6 +203,40 @@ export function isBrowseProgressMessage(data: unknown): data is BrowseProgressMe
     typeof msg.errorCount === "number" &&
     typeof msg.timestamp === "number" &&
     (msg.message === undefined || typeof msg.message === "string")
+  );
+}
+
+/**
+ * Validates a NetworkCommandRequest
+ */
+export function isNetworkCommandRequest(data: unknown): data is NetworkCommandRequest {
+  if (typeof data !== "object" || data === null) return false;
+  const msg = data as Record<string, unknown>;
+
+  return (
+    typeof msg.requestId === "string" &&
+    typeof msg.action === "string" &&
+    ["apply-config", "get-config", "add-address", "remove-address"].includes(msg.action as string) &&
+    typeof msg.timestamp === "number" &&
+    (msg.interfaces === undefined || Array.isArray(msg.interfaces)) &&
+    (msg.interfaceName === undefined || typeof msg.interfaceName === "string") &&
+    (msg.address === undefined || typeof msg.address === "string")
+  );
+}
+
+/**
+ * Validates a NftablesCommandRequest
+ */
+export function isNftablesCommandRequest(data: unknown): data is NftablesCommandRequest {
+  if (typeof data !== "object" || data === null) return false;
+  const msg = data as Record<string, unknown>;
+
+  return (
+    typeof msg.requestId === "string" &&
+    typeof msg.action === "string" &&
+    ["get-config", "apply-config"].includes(msg.action as string) &&
+    typeof msg.timestamp === "number" &&
+    (msg.natRules === undefined || Array.isArray(msg.natRules))
   );
 }
 
