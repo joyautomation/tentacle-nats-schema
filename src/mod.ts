@@ -35,6 +35,9 @@
 
 // Re-export all public types and validators
 export type {
+  UdtMemberDatatype,
+  UdtMemberDefinition,
+  UdtTemplateDefinition,
   PlcDataMessage,
   PlcStatusMessage,
   FieldSensorMessage,
@@ -73,6 +76,9 @@ export {
   createFieldCommandValidator,
   createCommunicationEventValidator,
 } from "./types.ts";
+
+// Pre-built UDT template definitions
+export { NetworkInterfaceTemplate, NatRuleTemplate } from "./templates.ts";
 
 // Topic definitions
 export { NATS_TOPICS, NATS_SUBSCRIPTIONS, substituteTopic, validateSubstitution, getAllTopicPatterns } from "./topics.ts";

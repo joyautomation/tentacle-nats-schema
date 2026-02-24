@@ -2,6 +2,33 @@
  * Shared data types for NATS messages across the Tentacle platform
  */
 
+// ═══════════════════════════════════════════════════════════════════════════════
+// Sparkplug B UDT / Template types
+// ═══════════════════════════════════════════════════════════════════════════════
+
+/** Primitive member datatypes supported in a Sparkplug B UDT template */
+export type UdtMemberDatatype = "number" | "boolean" | "string";
+
+/** A single member field in a UDT template definition */
+export type UdtMemberDefinition = {
+  name: string;
+  datatype: UdtMemberDatatype;
+  description?: string;
+};
+
+/**
+ * Sparkplug B UDT template definition.
+ * Published as a Template Definition metric in NBIRTH; instances reference it by name.
+ */
+export type UdtTemplateDefinition = {
+  /** Template type name used as templateRef in Sparkplug B (e.g. "NetworkInterface") */
+  name: string;
+  version?: string;
+  members: UdtMemberDefinition[];
+};
+
+// ═══════════════════════════════════════════════════════════════════════════════
+
 /** RBE (Report By Exception) deadband configuration */
 export type DeadBandConfig = {
   /** Threshold value: only publish if change exceeds this amount (for numeric types) */
@@ -26,6 +53,8 @@ export type PlcDataMessage = {
   disableRBE?: boolean;
   /** Optional: Human-readable description of this variable */
   description?: string;
+  /** Optional: Sparkplug B UDT template definition — present when datatype === "udt" */
+  udtTemplate?: UdtTemplateDefinition;
 };
 
 /** Module status update */
