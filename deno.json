@@ -2,7 +2,7 @@
   "name": "@joyautomation/tentacle-nats-schema",
   "version": "0.0.4",
   "description": "Shared NATS topic and message schemas for Tentacle platform",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "exports": {
     ".": "./src/mod.ts",
     "./topics": "./src/topics.ts",
