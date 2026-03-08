@@ -181,6 +181,7 @@ export type TentacleServiceType =
   | "mqtt"
   | "graphql"
   | "modbus"
+  | "modbus-server"
   | "opcua"
   | "network"
   | "nftables";
