@@ -68,6 +68,9 @@ export type {
   NftablesStateMessage,
   NftablesCommandRequest,
   NftablesCommandResponse,
+  MqttMetricInfo,
+  MqttTemplateInfo,
+  MqttMetricsResponse,
 } from "./types.ts";
 
 export {

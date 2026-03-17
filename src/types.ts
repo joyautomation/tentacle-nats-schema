@@ -14,6 +14,10 @@ export type UdtMemberDefinition = {
   name: string;
   datatype: UdtMemberDatatype;
   description?: string;
+  /** For nested struct members: reference to another UDT template by name */
+  templateRef?: string;
+  /** For array members */
+  isArray?: boolean;
 };
 
 /**
@@ -82,6 +86,45 @@ export type FieldCommandMessage = {
   command: string;
   params: Record<string, unknown>;
   requestId: string;
+  timestamp: number;
+};
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// MQTT metrics / state types
+// ═══════════════════════════════════════════════════════════════════════════════
+
+/** A single metric being published by tentacle-mqtt */
+export type MqttMetricInfo = {
+  /** Metric/variable name (e.g. "RTU45_RECLM_INT_001_YL") */
+  name: string;
+  /** Sparkplug type: "double", "boolean", "string", "template" */
+  sparkplugType: string;
+  /** Current value */
+  value: unknown;
+  /** Source module (e.g. "tentacle-demo") */
+  moduleId: string;
+  /** PLC datatype: "number", "boolean", "string", "udt" */
+  datatype: string;
+  /** Template name if this is a template instance */
+  templateRef?: string;
+};
+
+/** Template definition discovered by tentacle-mqtt */
+export type MqttTemplateInfo = {
+  /** Template name (e.g. "Pump_Maintenance") */
+  name: string;
+  version?: string;
+  members: UdtMemberDefinition[];
+};
+
+/** Response from mqtt.metrics request/reply */
+export type MqttMetricsResponse = {
+  /** All metrics currently on the Sparkplug device */
+  metrics: MqttMetricInfo[];
+  /** All discovered template definitions */
+  templates: MqttTemplateInfo[];
+  /** Sparkplug device ID */
+  deviceId: string;
   timestamp: number;
 };
 
@@ -184,7 +227,8 @@ export type TentacleServiceType =
   | "modbus-server"
   | "opcua"
   | "network"
-  | "nftables";
+  | "nftables"
+  | "snmp";
 
 /** Service heartbeat entry in KV - published by each tentacle service */
 export type ServiceHeartbeat = {

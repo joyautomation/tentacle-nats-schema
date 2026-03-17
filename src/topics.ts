@@ -88,6 +88,30 @@ export const NATS_TOPICS = {
 
     /** Outbound MQTT messages: mqtt.outbound.{topic} */
     outbound: "mqtt.outbound.{topic}",
+
+    /** On-demand metrics request (request/reply) */
+    metrics: "mqtt.metrics",
+  },
+
+  /** SNMP operations */
+  snmp: {
+    /** Browse (WALK) an SNMP device: snmp.browse */
+    browse: "snmp.browse",
+
+    /** Browse progress updates: snmp.browse.progress.{browseId} */
+    browseProgress: "snmp.browse.progress.{browseId}",
+
+    /** Subscribe to OID polling: snmp.subscribe */
+    subscribe: "snmp.subscribe",
+
+    /** Unsubscribe from OID polling: snmp.unsubscribe */
+    unsubscribe: "snmp.unsubscribe",
+
+    /** SNMP SET operation: snmp.set */
+    set: "snmp.set",
+
+    /** SNMP trap notifications: snmp.trap.{deviceId} */
+    trap: "snmp.trap.{deviceId}",
   },
 
   /** Service log streaming */
@@ -156,7 +180,7 @@ export function validateSubstitution(topic: string): boolean {
  */
 export const NATS_SUBSCRIPTIONS = {
   /** Subscribe to all variable data from a specific module */
-  allModuleData: (moduleId: string): string => `${moduleId}.data.*`,
+  allModuleData: (moduleId: string): string => `${moduleId}.data.>`,
 
   /** Subscribe to all variable data from all modules */
   allData: (): string => "*.data.>",
