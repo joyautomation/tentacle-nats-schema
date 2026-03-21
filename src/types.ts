@@ -37,6 +37,8 @@ export type UdtTemplateDefinition = {
 export type DeadBandConfig = {
   /** Threshold value: only publish if change exceeds this amount (for numeric types) */
   value: number;
+  /** Minimum time (ms) between publishes. Suppresses rapid changes. */
+  minTime?: number;
   /** Maximum time (ms) between publishes regardless of change. Forces publish if exceeded. */
   maxTime?: number;
 };
@@ -220,6 +222,7 @@ export type HealthCheckMessage = {
 /** Service types in the Tentacle ecosystem */
 export type TentacleServiceType =
   | "ethernetip"
+  | "ethernetip-server"
   | "plc"
   | "mqtt"
   | "graphql"

@@ -45,6 +45,21 @@ export const NATS_TOPICS = {
     unsubscribe: "ethernetip.unsubscribe",
   },
 
+  /** EtherNet/IP server (CIP server) operations */
+  "ethernetip-server": {
+    /** Subscribe to expose tags on CIP server: ethernetip-server.subscribe */
+    subscribe: "ethernetip-server.subscribe",
+
+    /** Unsubscribe from CIP server: ethernetip-server.unsubscribe */
+    unsubscribe: "ethernetip-server.unsubscribe",
+
+    /** Request current tag state: ethernetip-server.variables */
+    variables: "ethernetip-server.variables",
+
+    /** Browse exposed tags: ethernetip-server.browse */
+    browse: "ethernetip-server.browse",
+  },
+
   /** OPC UA operations */
   opcua: {
     /** Browse progress updates: opcua.browse.progress.{browseId} */
