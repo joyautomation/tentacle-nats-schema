@@ -224,6 +224,7 @@ export type TentacleServiceType =
   | "ethernetip"
   | "ethernetip-server"
   | "plc"
+  | "gateway"
   | "mqtt"
   | "graphql"
   | "modbus"
@@ -231,7 +232,18 @@ export type TentacleServiceType =
   | "opcua"
   | "network"
   | "nftables"
-  | "snmp";
+  | "snmp"
+  | "history";
+
+/** Service enabled/disabled state in KV — controls whether a service actively performs work */
+export type ServiceEnabledKV = {
+  /** Module identifier this state applies to */
+  moduleId: string;
+  /** Whether the service is enabled (performing work) or disabled (idle, heartbeat-only) */
+  enabled: boolean;
+  /** Timestamp when the state was last changed */
+  updatedAt: number;
+};
 
 /** Service heartbeat entry in KV - published by each tentacle service */
 export type ServiceHeartbeat = {
@@ -439,6 +451,100 @@ export type NftablesCommandResponse = {
   /** For get-config: current structured config */
   config?: NftablesConfig;
   timestamp: number;
+};
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// Gateway configuration types
+// ═══════════════════════════════════════════════════════════════════════════════
+
+/** Scanner protocol types supported by the gateway */
+export type GatewayProtocol = "ethernetip" | "opcua" | "snmp" | "modbus";
+
+/** EtherNet/IP device connection config */
+export type GatewayEthernetIpDevice = {
+  protocol: "ethernetip";
+  host: string;
+  port?: number;
+};
+
+/** OPC UA device connection config */
+export type GatewayOpcuaDevice = {
+  protocol: "opcua";
+  endpointUrl: string;
+};
+
+/** SNMP device connection config */
+export type GatewaySnmpDevice = {
+  protocol: "snmp";
+  host: string;
+  port?: number;
+  version: "1" | "2c" | "3";
+  community?: string;
+  v3Auth?: {
+    username: string;
+    securityLevel: "noAuthNoPriv" | "authNoPriv" | "authPriv";
+    authProtocol?: "MD5" | "SHA";
+    authPassword?: string;
+    privProtocol?: "DES" | "AES";
+    privPassword?: string;
+  };
+};
+
+/** Modbus device connection config */
+export type GatewayModbusDevice = {
+  protocol: "modbus";
+  host: string;
+  port?: number;
+  unitId?: number;
+};
+
+/** Union of all gateway device connection configs */
+export type GatewayDeviceConfig =
+  | GatewayEthernetIpDevice
+  | GatewayOpcuaDevice
+  | GatewaySnmpDevice
+  | GatewayModbusDevice;
+
+/** A gateway variable — maps a tag/node/OID from a device to a named variable */
+export type GatewayVariableConfig = {
+  /** Display name / variable ID */
+  id: string;
+  /** Optional human-readable description */
+  description?: string;
+  /** Data type of the variable */
+  datatype: "number" | "boolean" | "string";
+  /** Default value when no data has been received */
+  default: number | boolean | string;
+  /** Device ID this variable reads from (key in the devices map) */
+  deviceId: string;
+  /** Tag name, OPC UA nodeId, SNMP OID, or Modbus address depending on the device protocol */
+  tag: string;
+  /** Whether writes to this variable are routed back to the scanner */
+  bidirectional?: boolean;
+  /** RBE deadband configuration */
+  deadband?: DeadBandConfig;
+  /** Disable RBE for this variable (publish all changes) */
+  disableRBE?: boolean;
+  /** Modbus-specific: function code */
+  functionCode?: number;
+  /** Modbus-specific: data type */
+  modbusDatatype?: string;
+  /** Modbus-specific: byte order */
+  byteOrder?: string;
+  /** Modbus-specific: register address */
+  address?: number;
+};
+
+/** Full gateway configuration stored in NATS KV */
+export type GatewayConfigKV = {
+  /** Gateway instance ID */
+  gatewayId: string;
+  /** Scanner device connections, keyed by device ID */
+  devices: Record<string, GatewayDeviceConfig>;
+  /** Variable definitions, keyed by variable ID */
+  variables: Record<string, GatewayVariableConfig>;
+  /** Timestamp of last config update */
+  updatedAt: number;
 };
 
 /**

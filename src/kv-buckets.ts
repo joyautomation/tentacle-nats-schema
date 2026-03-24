@@ -81,6 +81,21 @@ export const DeviceHealthBucket = {
 } as const;
 
 /**
+ * KV bucket for service enabled/disabled state
+ * Keys: {moduleId}
+ * Value: ServiceEnabledKV JSON
+ * Controls whether a service actively performs work (polling, publishing, etc.)
+ * Missing key = enabled (services are enabled by default)
+ */
+export const ServiceEnabledBucket = {
+  name: "service_enabled",
+  description: "Service enabled/disabled state for each module",
+  keyPattern: "{moduleId}",
+  ttl: 0, // No expiration — persists until explicitly changed
+  maxBytes: -1,
+} as const;
+
+/**
  * KV bucket for service heartbeats
  * Keys: {moduleId}
  * Value: ServiceHeartbeat JSON
@@ -108,6 +123,20 @@ export const GraphQLCacheBucket = {
 } as const;
 
 /**
+ * KV bucket for gateway configuration
+ * Keys: {gatewayId}
+ * Value: GatewayConfigKV JSON
+ * Stores the full device + variable config for each gateway instance
+ */
+export const GatewayConfigBucket = {
+  name: "gateway_config",
+  description: "Gateway configuration (devices and variables) per instance",
+  keyPattern: "{gatewayId}",
+  ttl: 0, // No expiration — persists until explicitly changed
+  maxBytes: -1,
+} as const;
+
+/**
  * Helper to construct KV keys
  */
 export function kvKey(pattern: string, params: Record<string, string>): string {
@@ -128,8 +157,10 @@ export const ALL_KV_BUCKETS = [
   FieldMeasurementsBucket,
   SystemSettingsBucket,
   DeviceHealthBucket,
+  ServiceEnabledBucket,
   ServiceHeartbeatBucket,
   GraphQLCacheBucket,
+  GatewayConfigBucket,
 ] as const;
 
 /**
@@ -142,6 +173,8 @@ export const KV_BUCKET_MAP = {
   [FieldMeasurementsBucket.name]: FieldMeasurementsBucket,
   [SystemSettingsBucket.name]: SystemSettingsBucket,
   [DeviceHealthBucket.name]: DeviceHealthBucket,
+  [ServiceEnabledBucket.name]: ServiceEnabledBucket,
   [ServiceHeartbeatBucket.name]: ServiceHeartbeatBucket,
   [GraphQLCacheBucket.name]: GraphQLCacheBucket,
+  [GatewayConfigBucket.name]: GatewayConfigBucket,
 } as const;

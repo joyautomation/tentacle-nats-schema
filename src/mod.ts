@@ -52,6 +52,7 @@ export type {
   HealthCheckMessage,
   DeadBandConfig,
   TentacleServiceType,
+  ServiceEnabledKV,
   ServiceHeartbeat,
   ServiceLogEntry,
   BrowsePhase,
@@ -71,6 +72,14 @@ export type {
   MqttMetricInfo,
   MqttTemplateInfo,
   MqttMetricsResponse,
+  GatewayProtocol,
+  GatewayEthernetIpDevice,
+  GatewayOpcuaDevice,
+  GatewaySnmpDevice,
+  GatewayModbusDevice,
+  GatewayDeviceConfig,
+  GatewayVariableConfig,
+  GatewayConfigKV,
 } from "./types.ts";
 
 export {
@@ -94,8 +103,10 @@ export {
   FieldMeasurementsBucket,
   SystemSettingsBucket,
   DeviceHealthBucket,
+  ServiceEnabledBucket,
   ServiceHeartbeatBucket,
   GraphQLCacheBucket,
+  GatewayConfigBucket,
   ALL_KV_BUCKETS,
   KV_BUCKET_MAP,
   kvKey,
