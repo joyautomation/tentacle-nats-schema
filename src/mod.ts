@@ -80,6 +80,11 @@ export type {
   GatewayDeviceConfig,
   GatewayVariableConfig,
   GatewayConfigKV,
+  ModuleRuntime,
+  ModuleCategory,
+  ReconcileState,
+  DesiredServiceKV,
+  ServiceStatusKV,
 } from "./types.ts";
 
 export {
@@ -107,6 +112,8 @@ export {
   ServiceHeartbeatBucket,
   GraphQLCacheBucket,
   GatewayConfigBucket,
+  DesiredServicesBucket,
+  ServiceStatusBucket,
   ALL_KV_BUCKETS,
   KV_BUCKET_MAP,
   kvKey,

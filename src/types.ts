@@ -233,7 +233,8 @@ export type TentacleServiceType =
   | "network"
   | "nftables"
   | "snmp"
-  | "history";
+  | "history"
+  | "orchestrator";
 
 /** Service enabled/disabled state in KV — controls whether a service actively performs work */
 export type ServiceEnabledKV = {
@@ -544,6 +545,63 @@ export type GatewayConfigKV = {
   /** Variable definitions, keyed by variable ID */
   variables: Record<string, GatewayVariableConfig>;
   /** Timestamp of last config update */
+  updatedAt: number;
+};
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// Orchestrator types
+// ═══════════════════════════════════════════════════════════════════════════════
+
+/** Runtime environment for a tentacle module */
+export type ModuleRuntime = "go" | "deno" | "deno-web" | "binary";
+
+/** Module category */
+export type ModuleCategory = "core" | "optional";
+
+/** Reconciliation state of a module managed by the orchestrator */
+export type ReconcileState =
+  | "ok"
+  | "pending"
+  | "downloading"
+  | "installing"
+  | "starting"
+  | "stopping"
+  | "error"
+  | "version_unavailable";
+
+/** Desired state for a module, stored in NATS KV by the orchestrator */
+export type DesiredServiceKV = {
+  /** Module identifier (e.g., "tentacle-mqtt", "tentacle-snmp") */
+  moduleId: string;
+  /** Desired version (e.g., "0.0.5", "latest") */
+  version: string;
+  /** Whether the systemd unit should be active */
+  running: boolean;
+  /** Timestamp when this desired state was last changed */
+  updatedAt: number;
+};
+
+/** Status of a module as reported by the orchestrator */
+export type ServiceStatusKV = {
+  /** Module identifier */
+  moduleId: string;
+  /** List of versions installed on disk */
+  installedVersions: string[];
+  /** Currently active (symlinked) version, null if not installed */
+  activeVersion: string | null;
+  /** Systemd unit state as reported by systemctl */
+  systemdState: "active" | "inactive" | "failed" | "not-found";
+  /** Reconciliation state */
+  reconcileState: ReconcileState;
+  /** Last error message, if any */
+  lastError: string | null;
+  /** Module runtime type */
+  runtime: ModuleRuntime;
+  /** Module category */
+  category: ModuleCategory;
+  /** GitHub repo name for this module */
+  repo: string;
+  /** Timestamp of last status update */
   updatedAt: number;
 };
 

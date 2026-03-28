@@ -137,6 +137,35 @@ export const GatewayConfigBucket = {
 } as const;
 
 /**
+ * KV bucket for desired service state (orchestrator)
+ * Keys: {moduleId}
+ * Value: DesiredServiceKV JSON
+ * Declares what version should be running for each module
+ * Missing key = orchestrator ignores that module
+ */
+export const DesiredServicesBucket = {
+  name: "desired_services",
+  description: "Desired state for each tentacle module (version + running)",
+  keyPattern: "{moduleId}",
+  ttl: 0, // No expiration — persists until explicitly changed
+  maxBytes: -1,
+} as const;
+
+/**
+ * KV bucket for service status reported by the orchestrator
+ * Keys: {moduleId}
+ * Value: ServiceStatusKV JSON
+ * Orchestrator writes current reconciliation status for each module
+ */
+export const ServiceStatusBucket = {
+  name: "service_status",
+  description: "Current reconciliation status for each module reported by the orchestrator",
+  keyPattern: "{moduleId}",
+  ttl: 120, // 2 minutes — orchestrator refreshes every reconcile loop
+  maxBytes: -1,
+} as const;
+
+/**
  * Helper to construct KV keys
  */
 export function kvKey(pattern: string, params: Record<string, string>): string {
@@ -161,6 +190,8 @@ export const ALL_KV_BUCKETS = [
   ServiceHeartbeatBucket,
   GraphQLCacheBucket,
   GatewayConfigBucket,
+  DesiredServicesBucket,
+  ServiceStatusBucket,
 ] as const;
 
 /**
@@ -177,4 +208,6 @@ export const KV_BUCKET_MAP = {
   [ServiceHeartbeatBucket.name]: ServiceHeartbeatBucket,
   [GraphQLCacheBucket.name]: GraphQLCacheBucket,
   [GatewayConfigBucket.name]: GatewayConfigBucket,
+  [DesiredServicesBucket.name]: DesiredServicesBucket,
+  [ServiceStatusBucket.name]: ServiceStatusBucket,
 } as const;
