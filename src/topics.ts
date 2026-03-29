@@ -159,6 +159,12 @@ export const NATS_TOPICS = {
     command: "nftables.command",
   },
 
+  /** Orchestrator module management */
+  orchestrator: {
+    /** Orchestrator commands: get-registry, check-internet, get-module-versions (request/reply) */
+    command: "orchestrator.command",
+  },
+
   /** System health and monitoring */
   system: {
     /** Service health checks: system.health.{service} */

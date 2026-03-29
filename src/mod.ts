@@ -85,6 +85,10 @@ export type {
   ReconcileState,
   DesiredServiceKV,
   ServiceStatusKV,
+  OrchestratorCommandRequest,
+  OrchestratorCommandResponse,
+  ModuleRegistryInfo,
+  ModuleVersionInfo,
 } from "./types.ts";
 
 export {

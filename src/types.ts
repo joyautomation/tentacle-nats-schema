@@ -605,6 +605,50 @@ export type ServiceStatusKV = {
   updatedAt: number;
 };
 
+// ═══════════════════════════════════════════════════════════════════════════════
+// Orchestrator command request/reply types
+// ═══════════════════════════════════════════════════════════════════════════════
+
+/** Orchestrator command request (request/reply) */
+export type OrchestratorCommandRequest = {
+  requestId: string;
+  action: "get-registry" | "check-internet" | "get-module-versions";
+  /** For get-module-versions: which module to check */
+  moduleId?: string;
+  timestamp: number;
+};
+
+/** Module info from the orchestrator registry */
+export type ModuleRegistryInfo = {
+  moduleId: string;
+  repo: string;
+  description: string;
+  category: ModuleCategory;
+  runtime: ModuleRuntime;
+};
+
+/** Version info for a specific module */
+export type ModuleVersionInfo = {
+  moduleId: string;
+  installedVersions: string[];
+  latestVersion: string | null;
+  activeVersion: string | null;
+};
+
+/** Orchestrator command response */
+export type OrchestratorCommandResponse = {
+  requestId: string;
+  success: boolean;
+  error?: string;
+  /** get-registry result */
+  modules?: ModuleRegistryInfo[];
+  /** check-internet result */
+  online?: boolean;
+  /** get-module-versions result */
+  versions?: ModuleVersionInfo;
+  timestamp: number;
+};
+
 /**
  * Type guard creators for runtime validation
  */
