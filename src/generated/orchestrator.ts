@@ -47,6 +47,14 @@ export interface ServiceStatusKV {
   updatedAt: number;
 }
 
+/** ModuleConfigField describes a configuration field for a module. */
+export interface ModuleConfigField {
+  envVar: string;
+  description: string;
+  default?: string;
+  required: boolean;
+}
+
 /** ModuleRegistryInfo describes a module from the orchestrator registry. */
 export interface ModuleRegistryInfo {
   moduleId: string;
@@ -56,6 +64,7 @@ export interface ModuleRegistryInfo {
   category: string;
   /** "go", "deno", "deno-web", "binary" */
   runtime: string;
+  requiredConfig?: ModuleConfigField[];
 }
 
 /** ModuleVersionInfo holds version info for a specific module. */

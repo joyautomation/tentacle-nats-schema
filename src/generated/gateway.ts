@@ -13,6 +13,12 @@ export interface GatewayEthernetIpDevice {
   protocol: string;
   host: string;
   port?: number | undefined;
+  /** Polling interval in ms (default 1000) */
+  scanRate?: number | undefined;
+  /** Default deadband (RBE) config applied to all variables on this device */
+  deadband?: DeadBandConfig | undefined;
+  /** Disable RBE for all variables on this device */
+  disableRBE?: boolean | undefined;
 }
 
 /** GatewayOpcuaDevice is an OPC UA device connection config. */
@@ -20,6 +26,12 @@ export interface GatewayOpcuaDevice {
   /** "opcua" */
   protocol: string;
   endpointUrl: string;
+  /** Polling interval in ms (default 1000) */
+  scanRate?: number | undefined;
+  /** Default deadband (RBE) config applied to all variables on this device */
+  deadband?: DeadBandConfig | undefined;
+  /** Disable RBE for all variables on this device */
+  disableRBE?: boolean | undefined;
 }
 
 /** GatewaySnmpV3Auth holds SNMPv3 USM authentication parameters. */
@@ -49,6 +61,12 @@ export interface GatewaySnmpDevice {
   version: string;
   community?: string | undefined;
   v3Auth?: GatewaySnmpV3Auth | undefined;
+  /** Polling interval in ms (default 5000) */
+  scanRate?: number | undefined;
+  /** Default deadband (RBE) config applied to all variables on this device */
+  deadband?: DeadBandConfig | undefined;
+  /** Disable RBE for all variables on this device */
+  disableRBE?: boolean | undefined;
 }
 
 /** GatewayModbusDevice is a Modbus device connection config. */
@@ -58,6 +76,12 @@ export interface GatewayModbusDevice {
   host: string;
   port?: number | undefined;
   unitId?: number | undefined;
+  /** Polling interval in ms (default 1000) */
+  scanRate?: number | undefined;
+  /** Default deadband (RBE) config applied to all variables on this device */
+  deadband?: DeadBandConfig | undefined;
+  /** Disable RBE for all variables on this device */
+  disableRBE?: boolean | undefined;
 }
 
 /**
@@ -90,6 +114,8 @@ export interface GatewayVariableConfig {
   deviceId: string;
   /** Tag name, nodeId, OID, or Modbus address */
   tag: string;
+  /** Protocol-specific type hint (e.g. "REAL", "DINT" for EtherNet/IP) */
+  cipType?: string | undefined;
   /** Whether writes route back to the scanner */
   bidirectional?: boolean | undefined;
   deadband?: DeadBandConfig | undefined;
@@ -103,6 +129,43 @@ export interface GatewayVariableConfig {
   address?: number | undefined;
 }
 
+/** GatewayUdtTemplateMemberConfig describes a single field in a UDT template. */
+export interface GatewayUdtTemplateMemberConfig {
+  name: string;
+  /** "number", "boolean", "string" */
+  datatype: string;
+  /** For nested struct members: reference to another UDT template by name */
+  templateRef?: string | undefined;
+}
+
+/** GatewayUdtTemplateConfig is a UDT template definition stored in gateway config. */
+export interface GatewayUdtTemplateConfig {
+  /** Template type name (e.g. "Analog_Input") */
+  name: string;
+  /** Template version (default "1.0") */
+  version?: string | undefined;
+  /** Member field definitions */
+  members: GatewayUdtTemplateMemberConfig[];
+}
+
+/** GatewayUdtVariableConfig maps a UDT instance to a named variable with member tags. */
+export interface GatewayUdtVariableConfig {
+  /** Display name / variable ID */
+  id: string;
+  /** Device ID (key in the devices map) */
+  deviceId: string;
+  /** Base struct tag (e.g. "RTU45_RECLM_PIT_001") */
+  tag: string;
+  /** Key into udtTemplates map */
+  templateName: string;
+  /** member name -> full tag path (e.g. "VALUE" -> "RTU45_RECLM_PIT_001.VALUE") */
+  memberTags: { [key: string]: string };
+  /** member name -> CIP type hint (e.g. "VALUE" -> "REAL") */
+  memberCipTypes?: { [key: string]: string } | undefined;
+  deadband?: DeadBandConfig | undefined;
+  disableRBE?: boolean | undefined;
+}
+
 /**
  * GatewayConfigKV is the full gateway configuration stored in NATS KV.
  * Stored in the gateway_config KV bucket.
@@ -113,6 +176,10 @@ export interface GatewayConfigKV {
   devices: { [key: string]: GatewayDeviceConfig };
   /** Variable definitions keyed by variable ID */
   variables: { [key: string]: GatewayVariableConfig };
+  /** UDT template definitions keyed by template name */
+  udtTemplates?: { [key: string]: GatewayUdtTemplateConfig } | undefined;
+  /** UDT variable instances keyed by variable ID */
+  udtVariables?: { [key: string]: GatewayUdtVariableConfig } | undefined;
   updatedAt: number;
 }
 
@@ -124,4 +191,14 @@ export interface GatewayConfigKV_DevicesEntry {
 export interface GatewayConfigKV_VariablesEntry {
   key: string;
   value?: GatewayVariableConfig | undefined;
+}
+
+export interface GatewayConfigKV_UdtTemplatesEntry {
+  key: string;
+  value?: GatewayUdtTemplateConfig | undefined;
+}
+
+export interface GatewayConfigKV_UdtVariablesEntry {
+  key: string;
+  value?: GatewayUdtVariableConfig | undefined;
 }

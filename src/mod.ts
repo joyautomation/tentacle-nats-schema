@@ -79,6 +79,9 @@ export type {
   GatewayModbusDevice,
   GatewayDeviceConfig,
   GatewayVariableConfig,
+  GatewayUdtTemplateMember,
+  GatewayUdtTemplate,
+  GatewayUdtVariable,
   GatewayConfigKV,
   ModuleRuntime,
   ModuleCategory,
@@ -87,6 +90,7 @@ export type {
   ServiceStatusKV,
   OrchestratorCommandRequest,
   OrchestratorCommandResponse,
+  ModuleConfigField,
   ModuleRegistryInfo,
   ModuleVersionInfo,
 } from "./types.ts";

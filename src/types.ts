@@ -68,6 +68,7 @@ export type {
 export type {
   DesiredServiceKV,
   ServiceStatusKV,
+  ModuleConfigField,
   ModuleRegistryInfo,
   ModuleVersionInfo,
   OrchestratorCommandRequest,
@@ -173,12 +174,22 @@ export type GatewayModbusDevice = {
   unitId?: number;
 };
 
+/** Shared device-level settings that apply to all protocols */
+export type GatewayDeviceSharedSettings = {
+  scanRate?: number;
+  deadband?: DeadBandConfig;
+  disableRBE?: boolean;
+  /** Map of browse original template name → overridden unique name */
+  templateNameOverrides?: Record<string, string>;
+};
+
 /** Union of all gateway device connection configs */
 export type GatewayDeviceConfig =
-  | GatewayEthernetIpDevice
+  (GatewayEthernetIpDevice
   | GatewayOpcuaDevice
   | GatewaySnmpDevice
-  | GatewayModbusDevice;
+  | GatewayModbusDevice)
+  & GatewayDeviceSharedSettings;
 
 /** A gateway variable — maps a tag/node/OID from a device to a named variable */
 export type GatewayVariableConfig = {
@@ -210,6 +221,46 @@ export type GatewayVariableConfig = {
   address?: number;
 };
 
+/** A UDT template member definition */
+export type GatewayUdtTemplateMember = {
+  /** Member name */
+  name: string;
+  /** Normalized datatype: "number", "boolean", "string", or "struct" */
+  datatype: string;
+  /** For nested struct members: reference to another UDT template by name (e.g., "TIMER") */
+  templateRef?: string;
+  /** Default deadband config inherited by all instances (analog members only) */
+  defaultDeadband?: DeadBandConfig;
+};
+
+/** A UDT template definition stored in gateway config */
+export type GatewayUdtTemplate = {
+  /** Template type name (e.g., "Analog_Input", "TIMER") */
+  name: string;
+  /** Template version */
+  version?: string;
+  /** Template member definitions */
+  members: GatewayUdtTemplateMember[];
+};
+
+/** A UDT variable instance stored in gateway config */
+export type GatewayUdtVariable = {
+  /** Variable ID (typically the base tag name) */
+  id: string;
+  /** Device ID this variable reads from */
+  deviceId: string;
+  /** Base tag name on the PLC */
+  tag: string;
+  /** Name of the UDT template this instance uses */
+  templateName: string;
+  /** Maps member paths to EIP tag paths (e.g., "halm_timer.PRE" → "Instance.halm_timer.PRE") */
+  memberTags: Record<string, string>;
+  /** Maps member paths to their CIP type names (e.g., "halm_timer.PRE" → "DINT") */
+  memberCipTypes?: Record<string, string>;
+  /** Per-instance per-member deadband overrides (sparse — only stores diffs from template default) */
+  memberDeadbands?: Record<string, DeadBandConfig>;
+};
+
 /** Full gateway configuration stored in NATS KV */
 export type GatewayConfigKV = {
   /** Gateway instance ID */
@@ -218,6 +269,10 @@ export type GatewayConfigKV = {
   devices: Record<string, GatewayDeviceConfig>;
   /** Variable definitions, keyed by variable ID */
   variables: Record<string, GatewayVariableConfig>;
+  /** UDT template definitions, keyed by template name */
+  udtTemplates?: Record<string, GatewayUdtTemplate>;
+  /** UDT variable instances, keyed by variable ID */
+  udtVariables?: Record<string, GatewayUdtVariable>;
   /** Timestamp of last config update */
   updatedAt: number;
 };
